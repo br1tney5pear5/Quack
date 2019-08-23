@@ -1,0 +1,7 @@
+@using Quack.Models.Account
+@model PostContent
+
+<form asp-action="AddPost" asp-controller="Account" method="post">
+  <input asp-for="text" type="text"></input>
+  <button class="btn btn-default" type="submin">POST</button>
+</form>

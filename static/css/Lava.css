@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab');
+
+@mixin max-width($width) {
+  @media screen and (max-width: $width) {
+    @content;
+  }
+}
+
+$base-primary-color: #0430C9;
+$light-primary-color: lighten(desaturate($base-primary-color, 60), 15);
+$base-secondary-color: #FC4E1E;
+$light-secondary-color: lighten(desaturate($base-secondary-color, 10), 40);
+$base-text-color: #262838;
+$light-text-color: lighten(desaturate($base-text-color, 10), 30);
+$xlight-text-color: lighten(saturate($base-text-color, 10), 70);
+$xxlight-text-color: lighten(saturate($base-text-color, 20), 80);
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, .container {
+  height: 100%;
+}
+
+body {
+  background: white;
+  color: $base-text-color;
+  font-weight: 400;
+  font-size: 1rem;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    to right,
+    rgba(255, 249, 246, 1) 0%,
+    rgba(255, 233, 222, 1) 100%
+  );
+}
+
+canvas {
+  height: 100%;
+  width: 100%;
+  transform: scale(1.02);
+}

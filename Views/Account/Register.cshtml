@@ -1,0 +1,51 @@
+@using Quack.Models.Account
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<div class="register-container">
+  <div class="register-frame-nav">
+    Create your account
+  </div>
+  <div class="register-frame">
+    <form class="form-register"
+          asp-return-url="@ViewData["returnUrl"]"
+          asp-controller="Account"
+          asp-action="Register"
+          method="post">
+      <div class="register-frame-upper-panel">
+
+        <div class="form-group">
+          <label asp-for="email"></label>
+          <input class="form-styling" name="email" type="form-control"/>
+          <span asp-validation-for="email" class="text-danger validation-text"></span>
+        </div>
+
+
+        <div class="form-group">
+          <label asp-for="username"></label>
+          <input class="form-styling" name="username" type="form-control"/>
+          <span asp-validation-for="username" class="text-danger validation-text"></span>
+        </div>
+      </div>
+
+      <div class="register-frame-bottom-panel">
+        <div class="form-group">
+          <label asp-for="password"></label>
+          <input class="form-styling" name="password" type="password"/>
+          <span asp-validation-for="password" class="text-danger validation-text"></span>
+        </div>
+
+        <div class="form-group">
+          <label asp-for="confirmPassword"></label>
+          <input class="form-styling" name="confirmPassword" type="password"/>
+          <span asp-validation-for="confirmPassword" class="text-danger validation-text"></span>
+        </div>
+
+        <div class="form-group">
+          <button class="btn-login" type="submit">Sign up</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
