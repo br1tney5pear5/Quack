@@ -53,6 +53,11 @@
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
+            @if(TempData["message"] != null) {
+              <div id="snackbar">
+                @TempData["message"]
+              </div>
+            }
         </main>
     </div>
 
@@ -81,6 +86,14 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+      $(document).ready(function() {
+        var x = document.getElementById("snackbar")
+        x.className += "snackbar-show";
+      setTimeout(function(){ x.className = x.className.replace("snackbar-show", ""); },
+      5000);
+      });
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

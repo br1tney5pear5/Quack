@@ -43,7 +43,8 @@ namespace Quack.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     firstName = table.Column<string>(nullable: true),
-                    lastName = table.Column<string>(nullable: true)
+                    lastName = table.Column<string>(nullable: true),
+                    avatarUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -193,7 +194,8 @@ namespace Quack.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     authorID = table.Column<int>(nullable: false),
-                    contentID = table.Column<int>(nullable: false)
+                    contentID = table.Column<int>(nullable: false),
+                    datePublished = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,6 +232,34 @@ namespace Quack.Migrations
                         principalTable: "PostContent",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    authorID = table.Column<int>(nullable: false),
+                    text = table.Column<string>(nullable: true),
+                    datePublished = table.Column<DateTime>(nullable: false),
+                    postID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_authorID",
+                        column: x => x.authorID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comment_Post_postID",
+                        column: x => x.postID,
+                        principalTable: "Post",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -270,6 +300,16 @@ namespace Quack.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comment_authorID",
+                table: "Comment",
+                column: "authorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_postID",
+                table: "Comment",
+                column: "postID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Post_authorID",
                 table: "Post",
                 column: "authorID");
@@ -306,13 +346,16 @@ namespace Quack.Migrations
                 name: "Bot");
 
             migrationBuilder.DropTable(
-                name: "Post");
+                name: "Comment");
 
             migrationBuilder.DropTable(
                 name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Post");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -7,6 +7,7 @@
     --color-primary-dark: #18232D;
     --color-primary-light: #222D38;
     --color-secondary: #C5C6C7;
+    --color-secondary-dark: #B5B6B7;
     --color-light: #66FCF1;
     --color-dark: #0B0C10;
     --color-accent: #45A29E;
@@ -385,7 +386,11 @@ label {
     transition: background-color .5s; 
 }
 
-
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
 
 h1 {
   color: #ffffff;

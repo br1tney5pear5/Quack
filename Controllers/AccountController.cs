@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Quack.Models;
 using Quack.Models.Account;
+using Microsoft.EntityFrameworkCore;
 
 namespace Quack.Controllers
 {
@@ -31,6 +32,72 @@ namespace Quack.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        public async Task<IEnumerable<CommentDTO>> GetPostComments(int ID) {
+            return await _context.Comment
+                .OrderByDescending(p => p.datePublished)
+                .Where(c => c.postID == ID)
+                .Include(c => c.author)
+                .Select(c => new CommentDTO(c))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetPosts(int? skip, int? count) {
+            skip = skip ?? 0;
+            count = count ?? 10;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Skip(skip.Value)
+                .Take(count.Value)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetPostsBefore(int ID, int? count) {
+            count = count ?? 10;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Where(p => p.ID < ID)
+                .Take(count.Value)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetPostsAfter(int ID, int? maxcount) {
+            maxcount = maxcount ?? 100;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Where(p => p.ID > ID)
+                .Take(maxcount.Value)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> User(int ID) {
+            var user = await _userManager.FindByIdAsync(ID.ToString());
+
+            if(user != null) {
+                var userDTO = new UserDTO(user);
+                return View(userDTO);
+            }
+
+            TempData["message"] = "There is no such user!";
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null) {
@@ -42,6 +109,7 @@ namespace Quack.Controllers
             // tcs.SetException(new NotImplementedException());
             // return tcs.Task;
         }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -57,7 +125,7 @@ namespace Quack.Controllers
                                                                   model.rememberMe,
                                                                   lockoutOnFailure: false);
             if(!result.Succeeded) {
-                ViewBag.failureMessage = "The username and password you entered did not match the records. Please double-check and try again.";
+                TempData["message"] = "The username and password you entered did not match the records. Please double-check and try again.";
                 return View(model);
             }
 
@@ -107,7 +175,8 @@ namespace Quack.Controllers
             if(ModelState.IsValid) {
                 var post = new Post{
                     content = model,
-                    authorID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User))
+                    authorID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User)),
+                    datePublished = DateTime.UtcNow
                 };
 
                 _context.Post.Add(post);

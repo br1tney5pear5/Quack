@@ -32,3 +32,6 @@
 /shared/projects/Quack/obj/Debug/netcoreapp2.2/Quack.Views.pdb
 /shared/projects/Quack/obj/Debug/netcoreapp2.2/Quack.csproj.CopyComplete
 /shared/projects/Quack/obj/Debug/netcoreapp2.2/Razor/Views/Home/AddPostPartial.g.cshtml.cs
+/shared/projects/Quack/obj/Debug/netcoreapp2.2/Razor/Views/Home/GetPosts.g.cshtml.cs
+/shared/projects/Quack/obj/Debug/netcoreapp2.2/Razor/Views/Account/GetPosts.g.cshtml.cs
+/shared/projects/Quack/obj/Debug/netcoreapp2.2/Razor/Views/Account/User.g.cshtml.cs

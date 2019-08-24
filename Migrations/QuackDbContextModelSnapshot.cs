@@ -117,6 +117,28 @@ namespace Quack.Migrations
                     b.ToTable("Bot");
                 });
 
+            modelBuilder.Entity("Quack.Models.Comment", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("authorID");
+
+                    b.Property<DateTime>("datePublished");
+
+                    b.Property<int>("postID");
+
+                    b.Property<string>("text");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("authorID");
+
+                    b.HasIndex("postID");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("Quack.Models.Post", b =>
                 {
                     b.Property<int>("ID")
@@ -125,6 +147,8 @@ namespace Quack.Migrations
                     b.Property<int>("authorID");
 
                     b.Property<int>("contentID");
+
+                    b.Property<DateTime>("datePublished");
 
                     b.HasKey("ID");
 
@@ -224,6 +248,8 @@ namespace Quack.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("avatarUrl");
+
                     b.Property<string>("firstName");
 
                     b.Property<string>("lastName");
@@ -282,6 +308,19 @@ namespace Quack.Migrations
                     b.HasOne("Quack.Models.User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Quack.Models.Comment", b =>
+                {
+                    b.HasOne("Quack.Models.User", "author")
+                        .WithMany()
+                        .HasForeignKey("authorID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Quack.Models.Post", "post")
+                        .WithMany("comments")
+                        .HasForeignKey("postID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

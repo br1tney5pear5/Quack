@@ -15,6 +15,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Quack.Models.Account;
 
 using Quack.Models;
@@ -111,7 +112,11 @@ namespace Quack
                 foreach(var b in unassignedBots) {
                     string botName = "Bot" + b.ID.ToString() + "_" + random.Next(999999).ToString();
                     string botMail = botName + "@domain.com";
-                    var user = new User{UserName = botName, Email = botMail};
+                    var user = new User{
+                        UserName = botName,
+                        Email = botMail,
+                        avatarUrl = "https://i.pravatar.cc/100?img=" + random.Next(71).ToString()
+                    };
                     var result = await _userManager.CreateAsync(user, "Password123");
                     if(!result.Succeeded) {
                         _logger.LogWarning("Failed to create account for bot " +
@@ -127,7 +132,7 @@ namespace Quack
             }
 
             _logger.LogInformation("Bot Start");
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
             return;
         }
         public void DoWork(object state) {
@@ -135,7 +140,7 @@ namespace Quack
 
           foreach(Bot bot in bots) {
             float postDet = (float)random.NextDouble();
-            if(postDet > bot.postProbability){
+            if(postDet < bot.postProbability){
               string generated = "";
               int wordsCount = random.Next(bot.minWords, bot.maxWords);
 
@@ -182,14 +187,36 @@ namespace Quack
                   }
                   wordIndex = resultIndex;
               }
-              var postContent = new PostContent{text = generated};
-              var post = new Post{content = postContent, authorID = bot.userID};
 
               using (var scope = _scopeFactory.CreateScope()) {
                 var _context =
                     scope.ServiceProvider.GetRequiredService<QuackDbContext>();
-                _context.Post.Add(post);
-                _context.SaveChanges();
+                if(_context.Post.Count() < 10 || random.NextDouble() > 0.85) {
+                  var postContent = new PostContent{text = generated};
+                  var post = new Post{
+                      content = postContent,
+                      authorID = bot.userID,
+                      datePublished = DateTime.UtcNow
+                  };
+
+                  _context.Post.Add(post);
+                  _context.SaveChanges();
+                } else {
+                  var postID = _context.Post
+                      .OrderByDescending(p => p.datePublished)
+                      .Skip(random.Next(5))
+                      .FirstOrDefault().ID;
+
+                  var comment = new Comment{
+                      text = generated,
+                      postID = postID,
+                      authorID = bot.userID,
+                      datePublished = DateTime.UtcNow
+                  };
+
+                  _context.Comment.Add(comment);
+                  _context.SaveChanges();
+                }
               }
             }
           }

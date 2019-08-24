@@ -3,6 +3,10 @@
 
 @inject SignInManager<User> SignInManager
 
+@section Scripts {
+  <script src="@Url.Content("~/static/js/Panel.js")"> </script>
+}
+
 @section Styles {
     <link rel="stylesheet" href="~/static/css/Panel.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
@@ -15,69 +19,70 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=3.0, minimum-scale=0.86">
 }
-
+    
 @if(SignInManager.IsSignedIn(User)) {
 
 
-		<header class="side-header">
-			<nav class="navbar-side">
-				<ul>
-					<li class="active"><a href="#">
-              <span class="navbar-side-text">Bread</span>
-						<i class="fas fa-bread-slice fa-2x nav-icon"></i> </a>
-					</li>
-					<li class="active"><a href="#">
-              <span class="navbar-side-text">Explore</span>
-						<i class="fas fa-hashtag fa-2x nav-icon"></i> </a> 
-					</li>
+		<!-- <header class="side-header"> -->
+		<!-- 	<nav class="navbar-side"> -->
+		<!-- 		<ul> -->
+		<!-- 			<li class="active"><a href="#"> -->
+    <!--           <span class="navbar-side-text">Bread</span> -->
+		<!-- 				<i class="fas fa-bread-slice fa-2x nav-icon"></i> </a> -->
+		<!-- 			</li> -->
+		<!-- 			<li class="active"><a href="#"> -->
+    <!--           <span class="navbar-side-text">Explore</span> -->
+		<!-- 				<i class="fas fa-hashtag fa-2x nav-icon"></i> </a>  -->
+		<!-- 			</li> -->
 
-					<li class="active"><a href="#">
-              <span class="navbar-side-text">Profile</span>
-						<i class="fas fa-anchor fa-2x nav-icon"></i> </a> 
-					</li>
+		<!-- 			<li class="active"><a href="#"> -->
+    <!--           <span class="navbar-side-text">Profile</span> -->
+		<!-- 				<i class="fas fa-anchor fa-2x nav-icon"></i> </a>  -->
+		<!-- 			</li> -->
 
-					<li class="bottom"><a href="#">
-              <span class="navbar-side-text">Log out</span>
-						<i class="fas fa-hashtag fa-2x nav-icon"></i> </a>
-					</li>
-				</ul>
-			</nav>
+		<!-- 			<li class="bottom"><a href="#"> -->
+    <!--           <span class="navbar-side-text">Log out</span> -->
+		<!-- 				<i class="fas fa-hashtag fa-2x nav-icon"></i> </a> -->
+		<!-- 			</li> -->
+		<!-- 		</ul> -->
+		<!-- 	</nav> -->
 
-		</header>
-			<header class="top-navbar">
-				<div class="page-title">
+		<!-- </header> -->
+		<!-- 	<header class="top-navbar"> -->
+		<!-- 		<div class="page-title"> -->
 					
-				</div>
+		<!-- 		</div> -->
 
-				<form class="searchbar">
-					<input type="search" name="" placeholder="Search...">
-				</form>
+		<!-- 		<form class="searchbar"> -->
+		<!-- 			<input type="search" name="" placeholder="Search..."> -->
+		<!-- 		</form> -->
 
-				<nav class="navbar-top">
+		<!-- 		<nav class="navbar-top"> -->
 					
-					<ul>
-						<li>
-						</li>
+		<!-- 			<ul> -->
+		<!-- 				<li> -->
+		<!-- 				</li> -->
 
-						<li class="js-open-bar">
-						</li>
+		<!-- 				<li class="js-open-bar"> -->
+		<!-- 				</li> -->
 
-						<li class="menu-toggle">
-						</li>
+		<!-- 				<li class="menu-toggle"> -->
+		<!-- 				</li> -->
 
-					</ul>
+		<!-- 			</ul> -->
 
-				</nav>
+		<!-- 		</nav> -->
 
-			</header>
+		<!-- 	</header> -->
 
-			<section class="works smooth-in">
+		<!-- 	<section class="works smooth-in"> -->
 				
-			</section>
+			<!-- </section> -->
 
 <form asp-action="Logout" asp-controller="Account">
-  <button class="btn btn-default" type="submin">Logout</button>
+  <button class="btn btn-default" type="submit">Logout</button>
 </form>
+  <partial name="GetPosts"></partial>
   <partial name="AddPostPartial"></partial>
 } else {
   <partial name="Welcome"></partial>

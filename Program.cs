@@ -10,15 +10,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-//BOT
 using System.Text;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Quack.Models.Account;
-
-
 using Quack.Models;
+
 
 namespace Quack
 {
@@ -26,7 +26,24 @@ namespace Quack
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+
+            using(var scope = host.Services.CreateScope()) {
+                var services = scope.ServiceProvider;
+
+                var _logger = services.GetRequiredService<ILogger<Program>>();
+
+                try{
+                    var _context = services.GetRequiredService<QuackDbContext>();
+                    _context.Database.Migrate();
+
+                    SeedData.Initialize(services);
+                } catch(Exception ex){
+                    _logger.LogError(ex, "An error occured seeding the Database.");
+                }
+                host.Run();
+            }
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

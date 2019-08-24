@@ -8,5 +8,28 @@ namespace Quack.Models
         public string firstName { get; set; }
 
         public string lastName { get; set; }
+
+        public string avatarUrl { get; set; } = "/images/blank-profile.png";
     }
+
+    public class UserDTO
+    {
+        public UserDTO(User user) {
+            ID = user.Id;
+            username = user.UserName;
+            avatarUrl = user.avatarUrl;
+        }
+
+        public int ID { get; set; }
+
+        public string username { get; set; }
+
+        public string avatarUrl { get; set; }
+
+        public int postsCount { get; set; }
+
+        public int commentsCount { get; set; }
+    }
+
+
 }

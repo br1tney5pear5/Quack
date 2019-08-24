@@ -1,0 +1,16 @@
+<button onclick="loadmore()">LOAD</button>
+<script>
+  function loadmore(){
+
+  $.ajax({
+    type: 'POST',
+    url: '/Account/GetPosts1',
+    data: {"skip": 1},
+    dataType: 'html',
+  success: function(data) {
+
+  alert(data);
+  }
+  });
+  }
+</script>
