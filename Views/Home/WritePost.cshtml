@@ -1,0 +1,19 @@
+@using Quack.Models.Account
+@model PostContent
+<div>
+  
+<form asp-controller="Account" asp-action="AddPost">
+  <div class="post-input-frame">
+    <div class="text-input-frame">
+      <textarea class="text-input" placeholder="Write something..." asp-for="text"></textarea> </div>
+    <div class="text-input-bottom">
+      <button class="btn post-btn" type="submit">Post</button>
+      <span class="as">as</span>
+      <a class="profile-name" href="/Account/User?ID=1">DuckyDuck</a>
+
+    </div>
+  </div>
+  <div style="clear:both"> </div>
+</form>
+
+</div>

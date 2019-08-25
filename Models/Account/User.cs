@@ -10,6 +10,8 @@ namespace Quack.Models
         public string lastName { get; set; }
 
         public string avatarUrl { get; set; } = "/images/blank-profile.png";
+
+        public bool deletable { get; set; } = true;
     }
 
     public class UserDTO
@@ -29,6 +31,12 @@ namespace Quack.Models
         public int postsCount { get; set; }
 
         public int commentsCount { get; set; }
+
+        public bool followed { get; set; }
+ 
+        public int followingCount { get; set; }
+
+        public int followedByCount { get; set; }
     }
 
 

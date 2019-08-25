@@ -4,13 +4,15 @@
 @inject SignInManager<User> SignInManager
 
 @section Scripts {
+  <script src="@Url.Content("~/static/js/Post.js")"> </script>
   <script src="@Url.Content("~/static/js/Panel.js")"> </script>
 }
 
+
 @section Styles {
+    <link rel="stylesheet" href="~/static/css/Post.css" />
     <link rel="stylesheet" href="~/static/css/Panel.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
-
 		<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
 
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -21,69 +23,15 @@
 }
     
 @if(SignInManager.IsSignedIn(User)) {
+    
+<partial name="Sidebar"></partial>
 
-
-		<!-- <header class="side-header"> -->
-		<!-- 	<nav class="navbar-side"> -->
-		<!-- 		<ul> -->
-		<!-- 			<li class="active"><a href="#"> -->
-    <!--           <span class="navbar-side-text">Bread</span> -->
-		<!-- 				<i class="fas fa-bread-slice fa-2x nav-icon"></i> </a> -->
-		<!-- 			</li> -->
-		<!-- 			<li class="active"><a href="#"> -->
-    <!--           <span class="navbar-side-text">Explore</span> -->
-		<!-- 				<i class="fas fa-hashtag fa-2x nav-icon"></i> </a>  -->
-		<!-- 			</li> -->
-
-		<!-- 			<li class="active"><a href="#"> -->
-    <!--           <span class="navbar-side-text">Profile</span> -->
-		<!-- 				<i class="fas fa-anchor fa-2x nav-icon"></i> </a>  -->
-		<!-- 			</li> -->
-
-		<!-- 			<li class="bottom"><a href="#"> -->
-    <!--           <span class="navbar-side-text">Log out</span> -->
-		<!-- 				<i class="fas fa-hashtag fa-2x nav-icon"></i> </a> -->
-		<!-- 			</li> -->
-		<!-- 		</ul> -->
-		<!-- 	</nav> -->
-
-		<!-- </header> -->
-		<!-- 	<header class="top-navbar"> -->
-		<!-- 		<div class="page-title"> -->
-					
-		<!-- 		</div> -->
-
-		<!-- 		<form class="searchbar"> -->
-		<!-- 			<input type="search" name="" placeholder="Search..."> -->
-		<!-- 		</form> -->
-
-		<!-- 		<nav class="navbar-top"> -->
-					
-		<!-- 			<ul> -->
-		<!-- 				<li> -->
-		<!-- 				</li> -->
-
-		<!-- 				<li class="js-open-bar"> -->
-		<!-- 				</li> -->
-
-		<!-- 				<li class="menu-toggle"> -->
-		<!-- 				</li> -->
-
-		<!-- 			</ul> -->
-
-		<!-- 		</nav> -->
-
-		<!-- 	</header> -->
-
-		<!-- 	<section class="works smooth-in"> -->
-				
-			<!-- </section> -->
-
-<form asp-action="Logout" asp-controller="Account">
-  <button class="btn btn-default" type="submit">Logout</button>
-</form>
+<div class="panel">
+<div style="display:block; justify-content:center">
+  <partial name="WritePost"></partial>
   <partial name="GetPosts"></partial>
-  <partial name="AddPostPartial"></partial>
+</div>
+</div>
 } else {
   <partial name="Welcome"></partial>
 }

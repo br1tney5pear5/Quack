@@ -39,6 +39,11 @@ h1{
     overflow: hidden;
     transform: scale(0.7,0.7);
 }
+ 
+.btn:focus {
+    --webkit-box-shadow: 0px 0px 9px 3px red !important;
+    box-shadow: 0px 0px 1px 1px red !important;
+}
 
 .duck-icon-image {
     filter: invert(58%) sepia(46%) saturate(454%) hue-rotate(128deg) brightness(89%) contrast(89%);
@@ -386,11 +391,11 @@ label {
     transition: background-color .5s; 
 }
 
-.btn:focus, .btn:active {
-    outline: none !important;
-    box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-}
+/* .btn:focus, .btn:active { */
+/*     outline: none !important; */
+/*     box-shadow: none !important; */
+/*     -webkit-box-shadow: none !important; */
+/* } */
 
 h1 {
   color: #ffffff;

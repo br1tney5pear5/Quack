@@ -12,6 +12,7 @@ namespace Quack.Models
         public DbSet<Tag> Tag { get; set; }
         public DbSet<Comment> Comment { get; set; }
         public DbSet<BotModel> Bot { get; set; }
+        public DbSet<Following> Following { get; set; }
 
         public QuackDbContext(DbContextOptions<QuackDbContext> options)
             : base(options)

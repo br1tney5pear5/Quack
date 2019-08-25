@@ -65,9 +65,9 @@ function appendPosts(posts){
 function initialLoadPosts(){
     $.ajax({
         type: 'POST',
-        url: '/Account/GetPosts',
+        url: '/Account/GetUserPosts',
         data: {
-            "skip": 0,
+            "userID" : userId,
             "count": pageSize
         },
         dataType: 'html',
@@ -82,7 +82,6 @@ function initialLoadPosts(){
 
                 $("#post-view").empty();
                 appendPosts(posts);
-                console.log("intial load");
             } else {
                 console.error("server error");
             }
@@ -96,8 +95,9 @@ function loadNewPosts(){
     }else {
         $.ajax({
             type: 'POST',
-            url: '/Account/GetPostsAfter',
+            url: '/Account/GetUserPostsAfter',
             data: {"ID": newestLoadedPostID,
+                   "userID" : userId,
                    "count": pageSize
                   },
             dataType: 'html',
@@ -111,6 +111,7 @@ function loadNewPosts(){
 
                     newestLoadedPostID = parseInt(posts[0].id);
                     prependPosts(posts);
+                    console.log("intial load");
                 } else {
                     console.error("server error");
                 }
@@ -125,8 +126,9 @@ function loadMorePosts(){
     }else {
         $.ajax({
             type: 'POST',
-            url: '/Account/GetPostsBefore',
+            url: '/Account/GetUserPostsBefore',
             data: {"ID": lastLoadedPostID,
+                   "userID" : userId,
                    "count": pageSize
                   },
             dataType: 'html',
@@ -146,16 +148,15 @@ function loadMorePosts(){
 $( document ).ready(function() {
     initialLoadPosts();
 
+
     setInterval(function() {
         var triggerTop   = $('#top-trigger').offset().top;
         var windowTop    = $( window ).scrollTop();
         var windowBottom = windowTop + $( window ).height() * 2; 
         if(triggerTop > windowTop && triggerTop < windowBottom) {
-            loadNewPosts();
             reloadComments();
-            console.log("update");
         }
-    }, 1000);
+    }, 4000);
 });
 
 $( document ).scroll(function(e) {

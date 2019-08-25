@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,16 +23,17 @@ namespace Quack
         private readonly IHostingEnvironment _env;
         private readonly IConfiguration _config;
 
-        public Startup(IHostingEnvironment env, IConfiguration config)
+        public Startup(IHostingEnvironment env,
+                       IConfiguration config)
         {
             _env = env;
             _config = config;
         }
 
 
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHostedService<BotManager>();
             services.AddIdentity<User, Role> (options => {
                     options.User.RequireUniqueEmail = true;
                     if(_env.IsDevelopment()){
@@ -43,6 +45,8 @@ namespace Quack
                         options.Password.RequiredUniqueChars = 0;
                     }
                 }).AddEntityFrameworkStores<QuackDbContext>();
+
+            services.AddHostedService<BotManager>();
 
             services.AddDbContext<QuackDbContext>(options => {
                     options.UseSqlite(_config.GetConnectionString("Database"));
@@ -75,6 +79,25 @@ namespace Quack
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+
+            using (var serviceScope = app
+                   .ApplicationServices
+                   .GetRequiredService<IServiceScopeFactory>()
+                   .CreateScope())
+            {
+              var _userManager = serviceScope
+                  .ServiceProvider
+                  .GetService<UserManager<User>>();
+
+              var user = new User{
+                  UserName = "duckyduck",
+                  Email = "duckyduck@quackquack.quack",
+                  avatarUrl = "/static/images/ducky.gif",
+                  deletable = false
+              };
+              _userManager.CreateAsync(user, "Password123");
+            }
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "static")),

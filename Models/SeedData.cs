@@ -3,12 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using Quack.Models;
+using Quack.Models.Account;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Quack.Models {
   public static class SeedData
   {
     public static void Initialize(IServiceProvider serviceProvider)
     {
+
+
       using (var _context = new QuackDbContext(
         serviceProvider.GetRequiredService<DbContextOptions<QuackDbContext>>()))
       {

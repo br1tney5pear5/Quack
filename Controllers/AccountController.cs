@@ -57,6 +57,7 @@ namespace Quack.Controllers
                 .ToListAsync();
         }
 
+
         [HttpPost]
         public async Task<IEnumerable<PostDTO>> GetPostsBefore(int ID, int? count) {
             count = count ?? 10;
@@ -85,12 +86,105 @@ namespace Quack.Controllers
                 .ToListAsync();
         }
 
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetUserPosts(int userID, int? count) {
+            count = count ?? 10;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Where(p => p.authorID == userID)
+                .Take(count.Value)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetUserPostsBefore(int ID, int userID, int? count) {
+            count = count ?? 10;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Where(p => p.ID < ID && p.authorID == userID)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Take(count.Value)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetUserPostsAfter(int ID,  int userID,int? maxcount) {
+            maxcount = maxcount ?? 100;
+            return await _context.Post
+                .OrderByDescending(p => p.datePublished)
+                .Where(p => p.ID < ID && p.authorID == userID)
+                .Include(p => p.content)
+                .Include(p => p.author)
+                .Take(maxcount.Value)
+                .Include("comments.author")
+                .Select(p => new PostDTO(p))
+                .ToListAsync();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FollowUser(int ID) {
+            int currentUserID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User));
+            if(await _userManager.FindByIdAsync(ID.ToString()) != null &&
+               !_context.Following.Any(f => f.followerID == currentUserID && f.followedID == ID))
+            {
+                var following = new Following {
+                    followerID = currentUserID,
+                    followedID = ID
+                };
+                _context.Following.Add(following);
+                _context.SaveChanges();
+
+                TempData["message"] = "You are following user";
+            } else {
+                TempData["message"] = "Something went wrong";
+            }
+
+            return RedirectToAction("User", "Account", new { ID });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnfollowUser(int ID) {
+            int currentUserID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User));
+            Func<Following, bool> condition =
+                (f => f.followerID == currentUserID && f.followedID == ID);
+
+            if(await _userManager.FindByIdAsync(ID.ToString()) != null &&
+               _context.Following.Any(condition))
+            {
+                _context.Following.Remove(_context.Following.FirstOrDefault(condition));
+
+                _context.SaveChanges();
+                TempData["message"] = "unfollowed";
+            } else {
+                TempData["message"] = "Something went wrong";
+            }
+
+            return RedirectToAction("User", "Account", new { ID });
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> User(int ID) {
             var user = await _userManager.FindByIdAsync(ID.ToString());
 
             if(user != null) {
                 var userDTO = new UserDTO(user);
+                userDTO.postsCount = _context.Post.Count(p => p.authorID == ID);
+                userDTO.commentsCount = _context.Comment.Count(p => p.authorID == ID);
+                userDTO.followed = _context.Following.Any(f =>
+                    f.followerID == Convert.ToInt32(_userManager.GetUserId(HttpContext.User)) && f.followedID == ID);
+                userDTO.followingCount =
+                    _context.Following.Count(f => f.followerID == ID);
+                userDTO.followedByCount =
+                    _context.Following.Count(f => f.followedID == ID);
+
                 return View(userDTO);
             }
 
@@ -140,6 +234,7 @@ namespace Quack.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null) {

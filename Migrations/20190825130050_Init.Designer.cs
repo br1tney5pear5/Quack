@@ -9,7 +9,7 @@ using Quack.Models;
 namespace Quack.Migrations
 {
     [DbContext(typeof(QuackDbContext))]
-    [Migration("20190824222954_Init")]
+    [Migration("20190825130050_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,24 @@ namespace Quack.Migrations
                     b.ToTable("Comment");
                 });
 
+            modelBuilder.Entity("Quack.Models.Following", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("followedID");
+
+                    b.Property<int>("followerID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("followedID");
+
+                    b.HasIndex("followerID");
+
+                    b.ToTable("Following");
+                });
+
             modelBuilder.Entity("Quack.Models.Post", b =>
                 {
                     b.Property<int>("ID")
@@ -252,6 +270,8 @@ namespace Quack.Migrations
 
                     b.Property<string>("avatarUrl");
 
+                    b.Property<bool>("deletable");
+
                     b.Property<string>("firstName");
 
                     b.Property<string>("lastName");
@@ -323,6 +343,19 @@ namespace Quack.Migrations
                     b.HasOne("Quack.Models.Post", "post")
                         .WithMany("comments")
                         .HasForeignKey("postID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Quack.Models.Following", b =>
+                {
+                    b.HasOne("Quack.Models.User", "followed")
+                        .WithMany()
+                        .HasForeignKey("followedID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Quack.Models.User", "follower")
+                        .WithMany()
+                        .HasForeignKey("followerID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

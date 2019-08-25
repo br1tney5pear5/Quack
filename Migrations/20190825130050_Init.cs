@@ -44,7 +44,8 @@ namespace Quack.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     firstName = table.Column<string>(nullable: true),
                     lastName = table.Column<string>(nullable: true),
-                    avatarUrl = table.Column<string>(nullable: true)
+                    avatarUrl = table.Column<string>(nullable: true),
+                    deletable = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,6 +189,32 @@ namespace Quack.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Following",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    followerID = table.Column<int>(nullable: false),
+                    followedID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Following", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Following_AspNetUsers_followedID",
+                        column: x => x.followedID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Following_AspNetUsers_followerID",
+                        column: x => x.followerID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Post",
                 columns: table => new
                 {
@@ -310,6 +337,16 @@ namespace Quack.Migrations
                 column: "postID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Following_followedID",
+                table: "Following",
+                column: "followedID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Following_followerID",
+                table: "Following",
+                column: "followerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Post_authorID",
                 table: "Post",
                 column: "authorID");
@@ -347,6 +384,9 @@ namespace Quack.Migrations
 
             migrationBuilder.DropTable(
                 name: "Comment");
+
+            migrationBuilder.DropTable(
+                name: "Following");
 
             migrationBuilder.DropTable(
                 name: "Tag");
