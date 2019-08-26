@@ -1,0 +1,22 @@
+.bread-container{
+    padding-left: var(--sidebar-width);
+    display:flex;
+    flex-direction: column;
+}
+
+.about-duck-feeding {
+    font-family: 'Lexend Giga', sans-serif;
+    padding:20px;
+    max-width: var(--content-width);
+    color:white;
+}
+
+.no-followed {
+    margin:10px;
+    background-color: var(--color-dark);
+    border-radius: 15px;
+    padding:40px;
+    max-width: var(--content-width);
+    text-align:center;
+    color:white;
+}

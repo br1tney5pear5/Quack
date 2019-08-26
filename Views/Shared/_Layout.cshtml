@@ -20,8 +20,12 @@
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="@Url.Content("~/static/css/Global.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/static/css/Sidebar.css")" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Lexend+Giga&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
+		<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+    <link rel="stylesheet" href="~/static/css/Post.css" />
     @RenderSection("Styles", false)
 </head>
 <body>
@@ -86,6 +90,7 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="@Url.Content("~/static/js/Post.js")"> </script>
     <script>
       $(document).ready(function() {
         var x = document.getElementById("snackbar")

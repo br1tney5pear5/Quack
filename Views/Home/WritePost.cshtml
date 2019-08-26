@@ -1,5 +1,8 @@
 @using Quack.Models.Account
+@using Microsoft.AspNetCore.Identity
+
 @model PostContent
+
 <div>
   
 <form asp-controller="Account" asp-action="AddPost">
@@ -9,7 +12,7 @@
     <div class="text-input-bottom">
       <button class="btn post-btn" type="submit">Post</button>
       <span class="as">as</span>
-      <a class="profile-name" href="/Account/User?ID=1">DuckyDuck</a>
+      <a class="profile-name" href="/Account/Profile"> @Context.User.Identity.Name </a>
 
     </div>
   </div>

@@ -3,6 +3,9 @@ var garbageCollectionThres = 100;
 var pageSize = 5;
 var lastLoadedPostID = -1;
 var newestLoadedPostID = -1;
+var ofUserID = null;
+var forUserID = null;
+
 
 function loadCommentsForPost(post) {
     getPostComments(function(comments) {
@@ -35,7 +38,10 @@ function initialLoadPosts(){
 
         appendPosts(posts, $("#post-view"));
         console.log("intial load");
-    }, {"count":pageSize });
+    }, {"count":pageSize,
+        "ofUserID" : ofUserID,
+        "forUserID" : forUserID
+       });
 }
 
 function loadNewPosts(){
@@ -44,10 +50,15 @@ function loadNewPosts(){
     } else {
         getPostsAfter(function(posts){
             if(posts.length == 0) return;
+            if(newestLoadedPostID == parseInt(posts[0].id)) return;
 
             newestLoadedPostID = parseInt(posts[0].id);
             prependPosts(posts, $("#post-view"));
-        }, {"ID" : newestLoadedPostID, "maxcount" : pageSize});
+        }, {"ID" : newestLoadedPostID,
+            "maxcount" : pageSize,
+            "ofUserID" : ofUserID,
+            "forUserID" : forUserID
+           });
     }
 }
 
@@ -60,7 +71,11 @@ function loadMorePosts(){
 
             lastLoadedPostID = posts[posts.length -1].id;
             appendPosts(posts, $("#post-view"));
-        }, {"ID": lastLoadedPostID, "count": pageSize});
+        }, {"ID": lastLoadedPostID,
+            "count": pageSize,
+            "ofUserID" : ofUserID,
+            "forUserID" : forUserID
+           });
     }
 }
 

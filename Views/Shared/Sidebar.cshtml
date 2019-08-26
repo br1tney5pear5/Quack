@@ -1,0 +1,26 @@
+@model UserDTO
+<div class="sidebar">
+  <img class="profile-picture" src="@Model.avatarUrl"> 
+  <div class="username"> @Model.username </div>
+  <form id="about-btn"
+    asp-action="Index" asp-controller="Home" method="get">
+    <button href="#" onclick="from.submit()"><span>About</span><i class="icon fas fa-question"></i></button> 
+  </form>
+  <form id="bread-btn"
+    asp-action="Bread" asp-controller="Account" method="get">
+    <button href="#" onclick="from.submit()"><span>Bread</span><i class="icon fas fa-bread-slice"></i></button> 
+  </form>
+  <form id="explore-btn"
+    asp-action="Index" asp-controller="Home" method="get">
+    <button href="#" onclick="from.submit()"><span>Explore</span><i class="icon fas fa-hashtag"></i></button> 
+  </form>
+  <form id="profile-btn"
+    asp-action="Index" asp-controller="Home" method="get">
+    <button href="#" onclick="from.submit()"><span>Profile</span><i class="icon fas fa-anchor"></i></button> 
+  </form>
+  <div class="vertical-fill"></div>
+  <form id="logout-btn"
+    asp-action="Logout" asp-controller="Account" method="post">
+    <button href="#" onclick="from.submit()"><span>Logout</span><i class="icon fas fa-sign-out-alt"></i></button> 
+  </form>
+</div>

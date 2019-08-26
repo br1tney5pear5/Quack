@@ -16,6 +16,7 @@ namespace Quack.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AccountController> _logger;
@@ -32,6 +33,16 @@ namespace Quack.Controllers
             _context = context;
         }
 
+        Func<Post, int?, bool>
+            ofUserFilter = ((p, ofUserID) => ofUserID.HasValue
+                            ?  p.authorID == ofUserID
+                            : true); 
+
+        Func<Post, List<int>, bool>
+            forUserFilter = ((p , followed) => followed != null
+                             ? followed.Any(f => f == p.authorID)
+                             : true);
+
         [HttpPost]
         public async Task<IEnumerable<CommentDTO>> GetPostComments(int ID) {
             return await _context.Comment
@@ -43,12 +54,50 @@ namespace Quack.Controllers
         }
 
         [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetPosts(int? skip, int? count) {
-            skip = skip ?? 0;
-            count = count ?? 10;
+        public async Task<IEnumerable<PostDTO>> GetPosts(int? skip,
+                                                         int? count,
+                                                         int? ofUserID,
+                                                         int? forUserID)
+        {
+            return await _GetPosts((p => true), count, ofUserID, forUserID);
+        }
+
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetPostsBefore(int ID,
+                                                               int? count,
+                                                               int? ofUserID,
+                                                               int? forUserID)
+        {
+            return await _GetPosts((p => p.ID < ID), count, ofUserID, forUserID);
+        }
+
+        [HttpPost]
+        public async Task<IEnumerable<PostDTO>> GetPostsAfter(int ID,
+                                                              int? maxcount,
+                                                              int? ofUserID,
+                                                              int? forUserID)
+        {
+            return await _GetPosts((p => p.ID > ID), maxcount, ofUserID, forUserID);
+        }
+
+        private async Task<IEnumerable<PostDTO>> _GetPosts(Func<Post, bool> idFilter,
+                                                           int? count,
+                                                           int? ofUserID,
+                                                           int? forUserID)
+        {
+            List<int> followed = !forUserID.HasValue ? null : await _context.Following
+                .Where(f => f.followerID == forUserID.Value)
+                .Select(f => f.followedID)
+                .ToListAsync();
+
+            count = count ?? 100;
             return await _context.Post
                 .OrderByDescending(p => p.datePublished)
-                .Skip(skip.Value)
+                //I have absolutely no idea why I cant just pass lambda here
+                .Where(p => idFilter(p))
+                .Where(p => ofUserFilter(p, ofUserID)) 
+                .Where(p => forUserFilter(p, followed))
                 .Take(count.Value)
                 .Include(p => p.content)
                 .Include(p => p.author)
@@ -57,75 +106,10 @@ namespace Quack.Controllers
                 .ToListAsync();
         }
 
-
-        [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetPostsBefore(int ID, int? count) {
-            count = count ?? 10;
-            return await _context.Post
-                .OrderByDescending(p => p.datePublished)
-                .Where(p => p.ID < ID)
-                .Take(count.Value)
-                .Include(p => p.content)
-                .Include(p => p.author)
-                .Include("comments.author")
-                .Select(p => new PostDTO(p))
-                .ToListAsync();
-        }
-
-        [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetPostsAfter(int ID, int? maxcount) {
-            maxcount = maxcount ?? 100;
-            return await _context.Post
-                .OrderByDescending(p => p.datePublished)
-                .Where(p => p.ID > ID)
-                .Take(maxcount.Value)
-                .Include(p => p.content)
-                .Include(p => p.author)
-                .Include("comments.author")
-                .Select(p => new PostDTO(p))
-                .ToListAsync();
-        }
-
-        [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetUserPosts(int userID, int? count) {
-            count = count ?? 10;
-            return await _context.Post
-                .OrderByDescending(p => p.datePublished)
-                .Where(p => p.authorID == userID)
-                .Take(count.Value)
-                .Include(p => p.content)
-                .Include(p => p.author)
-                .Include("comments.author")
-                .Select(p => new PostDTO(p))
-                .ToListAsync();
-        }
-
-        [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetUserPostsBefore(int ID, int userID, int? count) {
-            count = count ?? 10;
-            return await _context.Post
-                .OrderByDescending(p => p.datePublished)
-                .Where(p => p.ID < ID && p.authorID == userID)
-                .Include(p => p.content)
-                .Include(p => p.author)
-                .Take(count.Value)
-                .Include("comments.author")
-                .Select(p => new PostDTO(p))
-                .ToListAsync();
-        }
-
-        [HttpPost]
-        public async Task<IEnumerable<PostDTO>> GetUserPostsAfter(int ID,  int userID,int? maxcount) {
-            maxcount = maxcount ?? 100;
-            return await _context.Post
-                .OrderByDescending(p => p.datePublished)
-                .Where(p => p.ID < ID && p.authorID == userID)
-                .Include(p => p.content)
-                .Include(p => p.author)
-                .Take(maxcount.Value)
-                .Include("comments.author")
-                .Select(p => new PostDTO(p))
-                .ToListAsync();
+        [HttpGet]
+        public async Task<IActionResult> Bread() {
+            return View (await GetUserDTO
+                 (Convert.ToInt32(_userManager.GetUserId(HttpContext.User))));
         }
 
         [HttpPost]
@@ -141,7 +125,9 @@ namespace Quack.Controllers
                 _context.Following.Add(following);
                 _context.SaveChanges();
 
-                TempData["message"] = "You are following user";
+                var user = await _userManager.FindByIdAsync(ID.ToString());
+
+                TempData["message"] = "You are following " + user.UserName;
             } else {
                 TempData["message"] = "Something went wrong";
             }
@@ -161,7 +147,10 @@ namespace Quack.Controllers
                 _context.Following.Remove(_context.Following.FirstOrDefault(condition));
 
                 _context.SaveChanges();
-                TempData["message"] = "unfollowed";
+
+                var user = await _userManager.FindByIdAsync(ID.ToString());
+
+                TempData["message"] = "Unfollowed " + user.UserName;
             } else {
                 TempData["message"] = "Something went wrong";
             }
@@ -172,6 +161,19 @@ namespace Quack.Controllers
 
         [HttpGet]
         public async Task<IActionResult> User(int ID) {
+            var model = new UserViewModel{
+                userDTO = await GetUserDTO(ID),
+                currentUserDTO = await GetCurrentUserDTO()
+            };
+
+            if(model.userDTO != null)
+                return View(model);
+
+            TempData["message"] = "There is no such user!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<UserDTO> GetUserDTO(int ID) {
             var user = await _userManager.FindByIdAsync(ID.ToString());
 
             if(user != null) {
@@ -179,22 +181,28 @@ namespace Quack.Controllers
                 userDTO.postsCount = _context.Post.Count(p => p.authorID == ID);
                 userDTO.commentsCount = _context.Comment.Count(p => p.authorID == ID);
                 userDTO.followed = _context.Following.Any(f =>
-                    f.followerID == Convert.ToInt32(_userManager.GetUserId(HttpContext.User)) && f.followedID == ID);
+                                                          f.followerID == Convert.ToInt32(_userManager.GetUserId(HttpContext.User)) && f.followedID == ID);
                 userDTO.followingCount =
                     _context.Following.Count(f => f.followerID == ID);
                 userDTO.followedByCount =
                     _context.Following.Count(f => f.followedID == ID);
 
-                return View(userDTO);
+                return userDTO;
             }
+            return null;
+        }
 
-            TempData["message"] = "There is no such user!";
-            return RedirectToAction("Index", "Home");
+        private async Task<UserDTO> GetCurrentUserDTO() {
+              return await GetUserDTO(Convert.ToInt32(_userManager.GetUserId(HttpContext.User)));
         }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null) {
+            if(_signInManager.IsSignedIn(HttpContext.User)) {
+                TempData["message"] = "You are already logged in";
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["returnUrl"] = returnUrl;
             ViewBag.returnUrl = returnUrl;
             return View();
@@ -238,32 +246,13 @@ namespace Quack.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null) {
+            if(_signInManager.IsSignedIn(HttpContext.User)) {
+                TempData["message"] = "You are already a registered user";
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["returnUrl"] = returnUrl;
             return View();
         }
-
-        // [HttpGet]
-        // [AllowAnonymous]
-        // public Task<IActionResult> GetFeed(string returnUrl = null) {
-        //     IQueryable<Post> postQuery = _context.Posts
-        //         .Include(p => p.content);
-
-        //     var PostFeed = new PostFeedViewModel();
-        //     PostFeed.posts = await postQuery.ToListAsync();
-
-        //     if(PostFeed.posts[0].content == null) {
-        //         _logger.LogWarning("content isis null");
-        //     }
-
-        //     var model = new HomeViewModel{
-        //         postFeedViewModel = PostFeed
-        //     };
-        //     // foreach(var post in PostFeed.Posts) {
-        //     //     _logger.LogWarning(post.ID.ToString());
-        //     // }
-
-        //     return View(model);
-        // }
 
         [HttpPost]
         public async Task<IActionResult> AddPost(PostContent model) {
@@ -287,18 +276,19 @@ namespace Quack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if(!ModelState.IsValid){
-                _logger.LogWarning("FAILED TO REGISTER");
+                TempData["message"] = "Something went Wrong :/";
                 return View(model);
             }
             var user = new User{ UserName = model.username, Email = model.email };
             var result = await _userManager.CreateAsync(user, model.password);
             if(result.Succeeded) {
-                _logger.LogInformation("Created new account {model.Email}");
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return View(model);
+
+                TempData["message"] = "Hey, you're now a Quack user!";
+                return RedirectToAction("Index", "Home");
             }
-            _logger.LogWarning("FAILED TO REGISTER");
-            AddErrors(result);
+
+            TempData["message"] = "Something went Wrong :/";
             return View(model);
         }
 
@@ -313,5 +303,7 @@ namespace Quack.Controllers
             else
                 return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+
+
     }
 }

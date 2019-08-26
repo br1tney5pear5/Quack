@@ -1,0 +1,24 @@
+@using Quack.Models.Account
+@model UserDTO
+
+@section Scripts {
+  <script src="@Url.Content("~/static/js/PostView.js")"> </script>
+  <script> forUserID = '@Html.Raw(Model.ID)' </script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/static/css/Bread.css" />
+}
+<partial name="Sidebar"> </partial>
+<div class="bread-container">
+  <div class="about-duck-feeding">Actually, you probably shouldn't feed ducks bread...</div> 
+  @if(Model.followingCount == 0) {
+  <div class="no-followed"> Seems like you are not following anybody </div>
+  } else {
+
+    <partial name="PostView"> </partial>
+  }
+</div>
+
+
+

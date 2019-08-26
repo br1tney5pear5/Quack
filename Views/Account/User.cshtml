@@ -1,46 +1,44 @@
 @using Quack.Models.Account
-@model UserDTO
+@model UserViewModel
 
 @section Scripts {
-  <script>
-  var userId = '@Html.Raw(Model.ID)'
-  </script>
-  <script src="@Url.Content("~/static/js/Post.js")"> </script>
-  <script src="@Url.Content("~/static/js/User.js")"> </script>
+  <script src="@Url.Content("~/static/js/PostView.js")"> </script>
+  <script> ofUserID = '@Html.Raw(Model.userDTO.ID)' </script>
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/static/css/Post.css" />
     <link rel="stylesheet" href="~/static/css/User.css" />
 }
 
 
+<partial name="Sidebar"
+          model="@Model.currentUserDTO"></partial>
 <div class="user-container">
   <div class="profile-container">
-    <img class="profile-picture" src="@Model.avatarUrl"> 
+    <img class="profile-picture" src="@Model.userDTO.avatarUrl"> 
     <div class="profile-text-container">
-      <div class="username"> @Model.username </div>
+      <div class="username"> @Model.userDTO.avatarUrl </div>
             <div class="profile-right">
-          @if(@Model.followed == false) {
-        <form asp-controller="Account" asp-action="FollowUser" asp-route-ID="@Model.ID" method="post">
+          @if(@Model.userDTO.followed == false) {
+        <form asp-controller="Account" asp-action="FollowUser" asp-route-ID="@Model.userDTO.ID" method="post">
             <button class="btn follow-btn" type="submit">Follow</button>
         </form>
           } else {
 
-        <form asp-controller="Account" asp-action="UnfollowUser" asp-route-ID="@Model.ID" method="post">
+        <form asp-controller="Account" asp-action="UnfollowUser" asp-route-ID="@Model.userDTO.ID" method="post">
             <button class="btn unfollow-btn" type="submit">Unfollow</button>
         </form>
         }
       </div>
 
       <div class="atext">
-        <div>Total posts count: @Model.postsCount</div>
-        <div>Total comments count: @Model.commentsCount</div>
-        <span>Followers: @Model.followedByCount, Follows: @Model.followingCount</span>
+        <div>Total posts count: @Model.userDTO.postsCount</div>
+        <div>Total comments count: @Model.userDTO.commentsCount</div>
+        <span>Followers: @Model.userDTO.followedByCount, Follows: @Model.userDTO.followingCount</span>
       </div>
       <div style="clear:both"> </div>
 
     </div>
   </div>
-  <partial name="UserPosts"> </partial>
+  <partial name="PostView"></partial>
 </div>

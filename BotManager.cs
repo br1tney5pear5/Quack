@@ -115,7 +115,7 @@ namespace Quack
                     var user = new User{
                         UserName = botName,
                         Email = botMail,
-                        avatarUrl = "https://i.pravatar.cc/100?img=" + random.Next(71).ToString()
+                        avatarUrl = "https://i.pravatar.cc/100?img=" + random.Next(1,71).ToString()
                     };
                     var result = await _userManager.CreateAsync(user, "Password123");
                     if(!result.Succeeded) {
@@ -132,7 +132,7 @@ namespace Quack
             }
 
             _logger.LogInformation("Bot Start");
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
             return;
         }
         public void DoWork(object state) {
@@ -158,7 +158,7 @@ namespace Quack
                   int resultIndex = random.Next(bot.count);
 
                   for(int y=0; y < bot.count; y++) {
-                      temp += bot.markovMatrix[wordIndex, y];
+                      temp += bot.markovMatrix[y, wordIndex];
                       if(temp > r) {
                           var w = bot.words[y];
                           if(capitalLetter) {

@@ -1,0 +1,73 @@
+.sidebar {
+    height: 100%; /* Specify a height */
+    width: var(--sidebar-width); /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+    padding-bottom: 10px;
+    padding-right: 3px;
+    /* text-align:center; */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+    display:flex;
+    flex-direction: column;
+    background-color: var(--color-secondary);
+    /* justify-content:center; */
+}
+
+.sidebar button{
+    background-color: rgba(0,0,0,0.2);
+    margin-bottom: 3px;
+    border-radius: 0 10px 10px 0;
+    border: 0;
+    font-size: 32px;
+    padding:15px;
+    width:100%;
+    vertical-align:middle;
+    color: var(--color-dark);
+}
+
+.sidebar button:hover{
+    background-color: rgba(0,0,0,0.1);
+
+}
+
+.sidebar button span{
+    float:left;
+    line-height:50px;
+    margin-left: 20px;
+    vertical-align:middle;
+}
+.sidebar button i{
+    width:50px;
+    line-height:50px;
+    float:right;
+    vertical-align:middle;
+    display:inline-block;
+}
+
+.sidebar .vertical-fill{
+    flex-grow: 1;
+}
+.sidebar .profile-picture {
+
+    --webkit-box-shadow: 0px 0px 9px 3px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 9px 3px rgba(0,0,0,0.28);
+    position:relative;
+    align-self:center;
+    margin:0;
+    width: 180px;
+    height: 180px;
+}
+.sidebar .username {
+    color: var(--color-dark); 
+    position:relative;
+    align-self:center;
+    margin:0;
+    font-size: 32px;
+    margin:10px;
+    margin-bottom:40px;
+}
+

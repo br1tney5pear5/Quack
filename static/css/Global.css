@@ -15,6 +15,8 @@
     --color-special-dim: rgba(198,199,200,0.7);
 
     --footer-height: 30px;
+    --sidebar-width: 250px;
+    --content-width: 600px;
 }
 
 html, body, main{
@@ -25,7 +27,7 @@ html, body, main{
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(31,40,51,0.95);
+    background-color: var(--color-accent);
     font-family: 'Fira Sans', sans-serif;
 }
 h1{
@@ -173,7 +175,10 @@ h1{
     min-height: 100%;
     margin:0px;
     padding:0px;
-    background: rgba(31,40,51,0.95);
+    background-color: var(--color-accent);
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
 }
 .welcome-login-frame-nav {
     text-align:center;
@@ -251,7 +256,6 @@ li {
     background-color: var(--color-accent);
     height:100%;
     width:100%;
-    position:absolute;
 }
 .login-frame {
     width: 100%;
@@ -286,7 +290,6 @@ li {
     background-color: var(--color-accent);
     height:100%;
     width:100%;
-    position:absolute;
 }
 .register-frame {
     width: 100%;

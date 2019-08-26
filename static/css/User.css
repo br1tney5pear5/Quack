@@ -3,19 +3,23 @@
     width:100%;
     height:100%;
     margin:0;
-
+    padding-left: var(--sidebar-width);
 }
 .profile-container {
-    max-width: 500px;
+    margin-left: 10px;
+    max-width: var(--content-width);
+    width: var(--content-width);
     border-radius: 0 0 10px 10px;
     color: var(--color-secondary);
     background-color: var(--color-dark);
     min-height:110px;
     height:100%;
+
+    display:flex;
+    flex-direction: column;
 }
 
 .profile-container .profile-text-container{
-    margin:10px;
     margin-left:110px;
 }
 

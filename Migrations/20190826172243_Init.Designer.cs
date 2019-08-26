@@ -9,7 +9,7 @@ using Quack.Models;
 namespace Quack.Migrations
 {
     [DbContext(typeof(QuackDbContext))]
-    [Migration("20190825130050_Init")]
+    [Migration("20190826172243_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
