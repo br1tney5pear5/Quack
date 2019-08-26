@@ -32,10 +32,15 @@ function renderPost(post) {
 
     postDOM.innerHTML += 
         '<div> \
-           <form asp-controller="Account" asp-action="AddPost"> \
+           <form action="/Account/AddComment" method="post" \
+                onsubmit="hideCommentBox(' + post.id + ')"> \
             <div class="comment-input-frame"> \
                 <div class="text-input-frame"> \
-                <textarea class="text-input" placeholder="Write something..." asp-for="text"></textarea> </div> \
+                <input type="hidden" id="returnUrl" name="returnUrl" value="' +
+        (location.href) + '"> \
+                <input type="hidden" id="postID" name="postID" value="' + post.id + '"> \
+                <textarea type="text" id="text" name="text"\
+                    class="text-input" placeholder="Write something..."></textarea> </div> \
                 <div class="text-input-bottom"> \
                 <button class="btn post-btn" type="submit">Comment</button> \
                 </div> \
@@ -44,20 +49,29 @@ function renderPost(post) {
            </form> \
         </div> ';
 
-    postDOM.innerHTML += '<button class="btn load-comments" onclick=" \
-        showCommentBox( ' + post.id + ')">Write Comment</button>\
+    postDOM.innerHTML += '<button class="btn comment-input-toggle" style="display:block" onclick=" \
+        showCommentBox( ' + post.id + ')">Write Comment</button> \
+                          <button class="btn comment-input-toggle" style="display:none" onclick=" \
+        hideCommentBox( ' + post.id + ')">Give up</button> \
     </div>';
 
     return postDOM;
 }
 
 function showCommentBox(postID) {
-    console.log(postID);
     var post = document.getElementById("post" + postID.toString());
-    var comDOM = post.getElementsByClassName("comment-input-frame")[0];
-    comDOM.style.display = "block";
-
+    post.getElementsByClassName("comment-input-frame")[0].style.display = "block";
+    post.getElementsByClassName("btn comment-input-toggle")[0].style.display = "none";
+    post.getElementsByClassName("btn comment-input-toggle")[1].style.display = "block";
 }
+function hideCommentBox(postID) {
+    var post = document.getElementById("post" + postID.toString());
+    post.getElementsByClassName("comment-input-frame")[0].style.display = "none";
+    post.getElementsByClassName("btn comment-input-toggle")[0].style.display = "block";
+    post.getElementsByClassName("btn comment-input-toggle")[1].style.display = "none";
+}
+
+
 
 function renderComment(comment){
 

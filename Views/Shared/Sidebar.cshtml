@@ -1,11 +1,11 @@
 @model UserDTO
 <div class="sidebar">
-  <img class="profile-picture" src="@Model.avatarUrl"> 
+  <img class="profile-picture" src="@Model.avatarUrl">
   <div class="username"> @Model.username </div>
-  <form id="about-btn"
-    asp-action="Index" asp-controller="Home" method="get">
-    <button href="#" onclick="from.submit()"><span>About</span><i class="icon fas fa-question"></i></button> 
-  </form>
+  <!-- <form id="about-btn" -->
+    <!-- asp-action="Index" asp-controller="Home" method="get"> -->
+    <button href="#" onclick='location.href="https://github.com/kcpikkt/Quack"'><span>About</span><i class="icon fas fa-question"></i></button> 
+  <!-- </form> -->
   <form id="bread-btn"
     asp-action="Bread" asp-controller="Account" method="get">
     <button href="#" onclick="from.submit()"><span>Bread</span><i class="icon fas fa-bread-slice"></i></button> 
@@ -15,7 +15,7 @@
     <button href="#" onclick="from.submit()"><span>Explore</span><i class="icon fas fa-hashtag"></i></button> 
   </form>
   <form id="profile-btn"
-    asp-action="Index" asp-controller="Home" method="get">
+    asp-action="User" asp-controller="Account" asp-route-id="@Model.ID" method="get">
     <button href="#" onclick="from.submit()"><span>Profile</span><i class="icon fas fa-anchor"></i></button> 
   </form>
   <div class="vertical-fill"></div>
@@ -24,3 +24,17 @@
     <button href="#" onclick="from.submit()"><span>Logout</span><i class="icon fas fa-sign-out-alt"></i></button> 
   </form>
 </div>
+<button class="sidebar-toggle" onclick="toggleSidebar()">
+  SIDEBAR
+</button>
+
+<script>
+  function toggleSidebar(){
+    var sidebar = document.getElementsByClassName("sidebar")[0];
+    if(sidebar.style.display != "none") {
+      sidebar.style.display = "none";
+    }else {
+      sidebar.style.display = "flex";
+    }
+  }
+</script>

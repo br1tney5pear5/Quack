@@ -16,6 +16,11 @@ namespace Quack.Models
 
     public class UserDTO
     {
+        public UserDTO() {
+            ID = -1;
+            username = "unknown";
+            avatarUrl = "/images/blank-profile.png";
+        }
         public UserDTO(User user) {
             ID = user.Id;
             username = user.UserName;

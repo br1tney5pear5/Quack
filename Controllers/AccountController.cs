@@ -212,6 +212,13 @@ namespace Quack.Controllers
             // return tcs.Task;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword() {
+            TempData["message"] = "No real emails - No password recovery, sorry.";
+            return RedirectToAction("Login", "Account");
+        }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -255,6 +262,32 @@ namespace Quack.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddComment(string text, int postID, string returnUrl) {
+            if(ModelState.IsValid) {
+                var comment = new Comment{
+                    postID = postID,
+                    text = text,
+                    authorID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User)),
+                    datePublished = DateTime.UtcNow
+                };
+                _context.Comment.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+            return Redirect(returnUrl); //security vuln?
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl) {
+            _logger.LogWarning(returnUrl);
+            if(Url.IsLocalUrl(returnUrl)) {
+                return Redirect(returnUrl);
+            }else {
+                return RedirectToAction("Index", "Home");
+
+            }
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> AddPost(PostContent model) {
             if(ModelState.IsValid) {
                 var post = new Post{
@@ -296,14 +329,5 @@ namespace Quack.Controllers
             foreach(var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
         }
-
-        private IActionResult RedirectLocal(string url) {
-            if(Url.IsLocalUrl(url))
-                return RedirectToAction(url);
-            else
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-
-
     }
 }

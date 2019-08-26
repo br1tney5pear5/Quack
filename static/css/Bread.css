@@ -4,10 +4,16 @@
     flex-direction: column;
 }
 
+@media (max-width:700px){
+    .bread-container {
+        padding-left:0;
+    }
+}
 .about-duck-feeding {
     font-family: 'Lexend Giga', sans-serif;
     padding:20px;
     max-width: var(--content-width);
+    text-align:center;
     color:white;
 }
 

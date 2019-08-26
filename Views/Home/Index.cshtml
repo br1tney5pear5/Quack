@@ -14,18 +14,13 @@
 }
 
     
-@if(SignInManager.IsSignedIn(User)) {
-    
-  <partial name="Sidebar"
-            model="@Model.userDTO"></partial>
-  <div class="panel">
-    <div style="display:block; justify-content:center">
-      <partial name="WritePost"
-               model="@Model.postContent"></partial>
-      <partial name="PostView"></partial>
-    </div>
+<partial name="Sidebar"
+          model="@Model.userDTO"></partial>
+<div class="panel">
+  <div style="display:block; justify-content:center">
+    <partial name="WritePost"
+              model="@Model.postContent"></partial>
+    <partial name="PostView"></partial>
   </div>
-} else {
-  <partial name="Welcome"></partial>
-}
+</div>
 

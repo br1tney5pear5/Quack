@@ -18,23 +18,7 @@
     <img class="profile-picture" src="@Model.userDTO.avatarUrl"> 
     <div class="profile-text-container">
       <div class="username"> @Model.userDTO.username </div>
-        <div class="profile-right">
-          @if(@Model.userDTO.ID == @Model.currentUserDTO.ID) {
-            <form asp-controller="Account" asp-action="Delete" method="post">
-                <button class="btn follow-btn" type="submit">Delete</button>
-            </form>
-          }else{
-            @if(@Model.userDTO.followed == false) {
-            <form asp-controller="Account" asp-action="FollowUser" asp-route-ID="@Model.userDTO.ID" method="post">
-                <button class="btn follow-btn" type="submit">Follow</button>
-            </form>
-              } else {
-
-            <form asp-controller="Account" asp-action="UnfollowUser" asp-route-ID="@Model.userDTO.ID" method="post">
-                <button class="btn unfollow-btn" type="submit">Unfollow</button>
-            </form>
-            }
-          }
+            <div class="profile-right">
       </div>
 
       <div class="atext">

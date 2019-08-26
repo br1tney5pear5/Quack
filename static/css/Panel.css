@@ -60,6 +60,12 @@ a {cursor: pointer;}
     background-color: var(--color-accent);
     padding-left: var(--sidebar-width);
 }
+@media (max-width:700px){
+    .panel {
+        padding-left:0;
+    }
+}
+
 .text-input-bottom .profile-picture{
     position:relative;
     float:right;

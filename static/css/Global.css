@@ -16,7 +16,7 @@
 
     --footer-height: 30px;
     --sidebar-width: 250px;
-    --content-width: 600px;
+    --content-width: 900px;
 }
 
 html, body, main{
@@ -35,7 +35,6 @@ h1{
 }
 
 .duck-icon-small-svg{
-    background-color:red;
 }
 .duck-icon-svg{
     overflow: hidden;
@@ -48,7 +47,8 @@ h1{
 }
 
 .duck-icon-image {
-    filter: invert(58%) sepia(46%) saturate(454%) hue-rotate(128deg) brightness(89%) contrast(89%);
+    z-index: 1;
+    /* filter: invert(58%) sepia(46%) saturate(454%) hue-rotate(128deg) brightness(89%) contrast(89%); */
 }
 @media (max-width:700px){
     .duck-icon-svg {

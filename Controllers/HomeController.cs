@@ -19,7 +19,6 @@ namespace Quack.Controllers
 {
     public class HomeController : Controller
     {
-
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AccountController> _logger;
@@ -39,15 +38,22 @@ namespace Quack.Controllers
 
 
         [HttpGet]
+        public async Task<IActionResult> Welcome()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var model = new IndexViewModel();
             int currentUserID = Convert.ToInt32(_userManager.GetUserId(HttpContext.User));
             UserDTO userDTO = await GetUserDTO(currentUserID);
 
-            if(userDTO != null)
-                model.userDTO = userDTO;
+            if(userDTO == null)
+              return RedirectToAction("Welcome", "Home");
 
+            model.userDTO = userDTO;
             return View(model);
         }
         private async Task<UserDTO> GetUserDTO(int ID) {

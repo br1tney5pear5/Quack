@@ -143,7 +143,7 @@
     color: rgba(255,255,255,0.7);
 }
 
-button.load-comments {
+button.comment-input-toggle {
     margin-left:50%;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -157,8 +157,7 @@ button.load-comments {
     border-bottom: solid 0px var(--color-dark);
     transition: .5s; 
 }
-
-button.load-comments:hover {
+button.comment-input-toggle:hover {
     transition: all 0.5s ease;
     cursor: pointer; 
     padding-top: 7px;
@@ -169,7 +168,6 @@ button.load-comments:hover {
 .post-input-frame{
     min-width: 100px;
     max-width: var(--content-width);
-    width: var(--content-width);
     margin: 10px;
     padding: 14px;
     border-radius: 10px 10px 0 10px;
@@ -228,7 +226,6 @@ button.load-comments:hover {
     color: var(--color-dark);
     min-width: 100px;
     max-width: var(--content-width);
-    width: var(--content-width);
     margin-top: 10px;
     padding: 14px;
     border-radius: 10px 0 10px 10px;
