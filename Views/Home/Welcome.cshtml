@@ -4,6 +4,7 @@
 <div class="welcome-block-form">
   <div class="welcome-login-frame">
     <div class="welcome-login-frame-nav"> Quack </div>
+    <div class="browser-notice">Please, view me in Firefox!</div>
     <form class="form-login"
           asp-controller="Account"
           asp-action="Login"
@@ -22,7 +23,7 @@
       </div>
 
       <div class="form-group checkbox-container">
-        <input name="rememberMe" type="checkbox" id="checkbox"/>
+        <input asp-for="rememberMe" name="rememberMe" type="checkbox" id="checkbox"/>
         <label for="checkbox"><span class="ui"></span></label>
         <label asp-for="rememberMe"
                style="margin-left:64px;
@@ -54,26 +55,27 @@
     class="duck-icon-svg"
   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <g class="duck-icon-board"  fill-rule="nonzero" fill="#1B95E0">
-    <image class="duck-icon-image" xlink:href="duck-icon.svg" height="100" width="100"/>
+    <image class="duck-icon-image" xlink:href="/images/duck-icon.svg" height="100" width="100"/>
   </g>
 </svg>
 <div class="welcome-block-promo-frame">
   <p class="welcome-block-promo-title">What the duck?</h1>
   <p class="welcome-block-promo-text">
-    This site is basically a Twitter clone and was made as a
-    show-off portfolio project made with
+    This site is basically a Twitter clone, made with
     <a class="welcome-block-promo-link"
        href="https://dotnet.microsoft.com/apps/aspnet">
-      ASP.NET Core</a>.
-    Though it is quite active since it is populated
-    with text generating bots.</p>
+      ASP.NET Core</a> as a
+    way to familiarize <a class="welcome-block-promo-link"
+       href="https://github.com/kcpikkt"> myself</a> with this particular backend.
+    It should have quite active community since I populated
+    it with simple markov chain text generating bots.</p>
   <p class="welcome-block-promo-text">
     To take a look either create your own account
     (use fake credentials!) or login to user
     <span class="welcome-block-promo-creds">
       duckyduck </span>
     with password 
-    <span class="welcome-block-promo-creds">
+    <span class="welcome-block-promo-creds"
       Password123 </span>
   </p>
   <p class="welcome-block-promo-text">
@@ -81,3 +83,6 @@
   </p>
 </div>
 </div>
+<style>
+
+</style>

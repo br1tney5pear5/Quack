@@ -225,10 +225,12 @@ namespace Quack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null) {
             if(!ModelState.IsValid){
-                _logger.LogWarning("1");
                 return View(model);
                 // RedirectToAction("Login", "Account");
             }
+            _logger.LogWarning(model.username);
+            _logger.LogWarning(model.password);
+            _logger.LogWarning(model.rememberMe.ToString());
             var result = await _signInManager.PasswordSignInAsync(model.username,
                                                                   model.password,
                                                                   model.rememberMe,
