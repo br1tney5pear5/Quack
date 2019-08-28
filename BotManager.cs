@@ -132,7 +132,7 @@ namespace Quack
             }
 
             _logger.LogInformation("Bot Start");
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(2));
             return;
         }
         public void DoWork(object state) {
